@@ -1,21 +1,18 @@
 from poc.receiver.base import ReceiverBase
-import bottle
+from bottle import Bottle, route, request
+import json
 
 SERVER = Bottle()
 
 
 class ReceiverRest(ReceiverBase):
-
-    def __init__(self, port):
-        super().__init__(port)
-        self.ip = "localhost"
-        self.server = None
-        self.action = None
-
     def run(self, action: classmethod):
-        self.running = True
         self.action = action
-        self.__listen()
+        self.running = True
+        SERVER.run(host='0.0.0.0', port=self.port)
 
-    def __listen(self):
-        self.server = websockets.serve(self.action, self.ip, self.port)
+    @route('/', method='POST')
+    def root(self):
+        data = request.json()
+        result = self.action(data)
+        return json.dumps({'result': result})

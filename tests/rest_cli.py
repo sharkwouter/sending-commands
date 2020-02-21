@@ -2,18 +2,19 @@ import unittest
 import os
 import time
 from poc.node.cli import NodeCli
-from poc.sender.ws import SenderWebsocket
+from poc.sender.rest import SenderRest
 from tests.data.constants import IP, PORT, MESSAGE_SUCCEED, MESSAGE_FAIL, TEST_FILE
 import subprocess
 
 
 node = NodeCli()
-sender = SenderWebsocket(IP, PORT)
-client = ["python3", "tests/clients/ws_cli.py"]
+sender = SenderRest(IP, PORT+1)
+client = ["python3", "tests/clients/rest_cli.py"]
 process = subprocess.Popen(client)
 time.sleep(2)
 
-class WsCliTest(unittest.TestCase):
+
+class RestCliTest(unittest.TestCase):
     def test_execution(self):
         node.commands = MESSAGE_SUCCEED
         node.send_commands(sender)
